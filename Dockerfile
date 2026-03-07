@@ -8,4 +8,9 @@ COPY . /var/www/html
 
 RUN chown -R www-data:www-data /var/www/html
 
+RUN a2enmod rewrite
+
+# Important: change apache root to Laravel public folder
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+
 EXPOSE 80
