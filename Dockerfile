@@ -1,27 +1,22 @@
 FROM php:8.2-apache
 
-# Install system packages
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    zip \
-    curl \
-    libzip-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev
+WORKDIR /var/www/html
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install pdo pdo_mysql zip gd
+COPY . .
+
+# Install dependencies
+RUN apt-get update && apt-get install -y unzip git
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
+# Create Laravel folders
+RUN mkdir -p bootstrap/cache \
+    && mkdir -p storage/framework/cache \
+    && mkdir -p storage/framework/sessions \
+    && mkdir -p storage/framework/views
 
-# Copy project files
-COPY . .
+RUN chmod -R 775 storage bootstrap/cache
 
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
