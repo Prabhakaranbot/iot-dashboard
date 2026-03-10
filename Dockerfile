@@ -4,8 +4,13 @@ WORKDIR /var/www/html
 
 COPY . .
 
-# Install dependencies
-RUN apt-get update && apt-get install -y unzip git
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    libzip-dev \
+    && docker-php-ext-install zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
