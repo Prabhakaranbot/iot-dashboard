@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install zip gd
 
+RUN touch database/database.sqlite
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
